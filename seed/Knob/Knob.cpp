@@ -26,7 +26,7 @@ int main(void)
     adcConfig.InitSingle(hardware.GetPin(21));
 
     //Initialize the adc with the config we just made
-    hardware.adc.Init(&adcConfig, 1);
+    hardware.adc.Init(&adcConfig,1 );
     //Start reading values
     hardware.adc.Start();
 

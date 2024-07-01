@@ -1,0 +1,12 @@
+[submodule "lib/DaisySP"]
+	path = lib/DaisySP
+	url = https://github.com/electro-smith/DaisySP.git
+[submodule "lib/libDaisy"]
+	path = lib/libDaisy
+	url = https://github.com/electro-smith/libDaisy.git
+[submodule "lib/rtaudio"]
+	path = lib/rtaudio
+	url = https://github.com/thestk/rtaudio.git
+[submodule "lib/rtmidi"]
+	path = lib/rtmidi
+	url = https://github.com/thestk/rtmidi.git

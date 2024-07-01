@@ -3,6 +3,7 @@ TARGET = Looper
 
 # Sources
 CPP_SOURCES = Looper.cpp
+USE_DAISYSP_LGPL = 1
 
 # Library Locations
 LIBDAISY_DIR = ../../libDaisy/

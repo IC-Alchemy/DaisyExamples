@@ -6,7 +6,7 @@ using namespace patch_sm;
 using namespace daisysp;
 
 DaisyPatchSM   hw;
-Switch         button, toggle;
+Switch         button6,button5,button3,button4, toggle;
 FIL            file; /**< Can't be made on the stack (DTCMRAM) */
 FatFSInterface fsi;
 
@@ -15,8 +15,11 @@ void AudioCallback(AudioHandle::InputBuffer  in,
                    size_t                    size)
 {
     hw.ProcessAllControls();
-    button.Debounce();
-    toggle.Debounce();
+    button6.Debounce();
+    button5.Debounce();
+    button4.Debounce();
+    button3.Debounce();
+    //toggle.Debounce();
     for(size_t i = 0; i < size; i++)
     {
         out[0][i] = in[0][i];
@@ -80,8 +83,11 @@ int main(void)
 
 
     /** Initialize Button/Toggle for rest of test. */
-    button.Init(DaisyPatchSM::B7, hw.AudioCallbackRate());
-    toggle.Init(DaisyPatchSM::B8, hw.AudioCallbackRate());
+    button6.Init(DaisyPatchSM::D6, hw.AudioCallbackRate());
+    button1.Init(DaisyPatchSM::D5, hw.AudioCallbackRate());
+    button2.Init(DaisyPatchSM::D4, hw.AudioCallbackRate());
+    button3.Init(DaisyPatchSM::D3, hw.AudioCallbackRate());
+    //toggle.Init(DaisyPatchSM::B8, hw.AudioCallbackRate());
 
     daisysp::Phasor dacphs;
     dacphs.Init(500);
@@ -121,13 +127,11 @@ int main(void)
             }
             hw.PrintLine("######################");
             hw.PrintLine("Digital Inputs:");
-            hw.Print("Button: %s\t", button.Pressed() ? "ON" : "OFF");
-            hw.Print("Toggle: %s\t", toggle.Pressed() ? "UP" : "DOWN");
-            hw.Print("\nGATE_IN_1: %s\t",
-                     hw.gate_in_1.State() ? "HIGH" : "LOW");
-            hw.PrintLine("GATE_IN_2: %s",
-                         hw.gate_in_2.State() ? "HIGH" : "LOW");
-            hw.PrintLine("######################");
+            hw.Print("Button1: %s\t", button6.Pressed() ? "ON" : "OFF");
+            hw.Print("Button2: %s\t", button5.Pressed() ? "ON" : "OFF");
+            hw.Print("Button3: %s\t", button3.Pressed() ? "ON" : "OFF");
+            hw.Print("Button4: %s\t", button4.Pressed() ? "ON" : "OFF");
+           
             usbt = now;
         }
         if(now - gatet > 1000)

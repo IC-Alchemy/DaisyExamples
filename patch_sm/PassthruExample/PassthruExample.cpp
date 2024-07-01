@@ -1,61 +1,50 @@
 #include "daisy_patch_sm.h"
 #include "daisysp.h"
 
-/** These are namespaces for the daisy libraries.
- *  These lines allow us to omit the "daisy::" and "daisysp::" before
- * referencing modules, and functions within the daisy libraries.
- */
 using namespace daisy;
 using namespace patch_sm;
 using namespace daisysp;
 
-/** Our hardware board class handles the interface to the actual DaisyPatchSM
- * hardware. */
-DaisyPatchSM patch;
+DaisyPatchSM hw;
 
-/** Callback for processing and synthesizing audio
- *
- *  The audio buffers are arranged as arrays of samples for each channel.
- *  For example, to access the left input you would use:
- *    in[0][n]
- *  where n is the specific sample.
- *  There are "size" samples in each array.
- *
- *  The default size is very small (just 4 samples per channel). This means the
- * callback is being called at 16kHz.
- *
- *  This size is acceptable for many applications, and provides an extremely low
- * latency from input to output. However, you can change this size by calling
- * patch.SetAudioBlockSize(desired_size). When running complex DSP it can be more
- * efficient to do the processing on larger chunks at a time.
- *
- */
-void AudioCallback(AudioHandle::InputBuffer  in,
-                   AudioHandle::OutputBuffer out,
-                   size_t                    size)
+
+SampleHold samp1,samp2;
+
+
+void EnvelopeCallback(uint16_t** output, size_t size)
+
+
 {
-    /** The easiest way to do pass thru is to simply copy the input to the output
-   * In C++ the standard way of doing this is with std::copy. However, those
-   * familliar with C can use memcpy. A simple loop is also a good way to do
-   * this.
-   *
-   * Since you'll most likely want to be doing something between the input,
-   *  and the output, and not just passing it through we'll demonstrate doing
-   *  so with a for loop.
-   */
+    hw.ProcessAllControls();
+
+
+    bool  trig1 = hw.gate_in_1.Trig();
+    bool  trig2 = hw.gate_in_2.Trig();
+    float slewKnobber1
+        = fmap(hw.GetAdcValue(CV_8), .000001f, 12.11f, Mapping::LINEAR);
+    float cvraw1 = hw.GetAdcValue(CV_6);
+
+    float cvraw2 = hw.GetAdcValue(CV_7);
+
+
     for(size_t i = 0; i < size; i++)
     {
-        out[0][i] = in[0][i]; /**< Copy the left input to the left output */
-        out[1][i] = in[1][i]; /**< Copy the right input to the right output */
+        float current_out1
+            = samp1.Process(trig1, cvraw2, SampleHold::Mode::MODE_SAMPLE_HOLD);
+        float current_out2 = samp2.Process(trig2, cvraw1,SampleHold::Mode::MODE_TRACK_HOLD);
+
+        output[0][i] = (current_out1 * 4095.0f);
+
+        output[1][i] = (current_out2 * 4095.0f);
     }
 }
 
 int main(void)
 {
-    /** Initialize the hardware */
-    patch.Init();
+    hw.Init();
+    hw.SetAudioBlockSize(4); // number of samples handled per callback
+    hw.SetAudioSampleRate(SaiHandle::Config::SampleRate::SAI_48KHZ);
+    hw.StartDac(EnvelopeCallback);
 
-    /** Start Processing the audio */
-    patch.StartAudio(AudioCallback);
     while(1) {}
 }

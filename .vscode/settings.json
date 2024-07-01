@@ -89,6 +89,6 @@
                 }
             }
         ]
-    }
-    
+    },
+    "cmake.sourceDirectory": "X:/code/clean/DaisyExamples/DaisySP/DaisySP-LGPL"
 }

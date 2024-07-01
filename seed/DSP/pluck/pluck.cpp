@@ -1,79 +1,78 @@
-#include "daisysp.h"
+/** Example of DAC Output using basic Polling implementation
+ *  
+ *  This will use A8 to demonstrate DAC output
+ *  This will generate a ramp wave from 0-3v3
+ * 
+ *  A7 will output a ramp, and output A8 will output an inverted ramp
+ */
 #include "daisy_seed.h"
-#include <algorithm>
 
-// Shortening long macro for sample rate
-#ifndef sample_rate
-
-#endif
-
-// Interleaved audio definitions
-#define LEFT (i)
-#define RIGHT (i + 1)
-
-using namespace daisysp;
+/** This prevents us from having to type "daisy::" in front of a lot of things. */
 using namespace daisy;
 
-static DaisySeed hw;
-
-// Helper Modules
-static Metro tick;
-static Pluck plk;
-
-// MIDI note numbers for a major triad
-const float kArpeggio[3] = {48.0f, 52.0f, 55.0f};
-uint8_t     arp_idx;
-
-static void AudioCallback(AudioHandle::InterleavingInputBuffer  in,
-                          AudioHandle::InterleavingOutputBuffer out,
-                          size_t                                size)
+/** Global Hardware access */
+DaisySeed hw;
+float     semitones_per_octave = 12.0f;
+float     volts_per_semitone   = 1.0 / semitones_per_octave;
+int       poo                  = 0;
+uint32_t  volts_to_DAC(int      volts,
+                       uint32_t resolution  = 4096,
+                       float    min_voltage = 0.0f,
+                       float    max_voltage = 3.3f)
 {
-    float sig_out, freq, trig;
-    for(size_t i = 0; i < size; i += 2)
-    {
-        // When the Metro ticks:
-        // advance the kArpeggio, and trigger the Pluck.
-        trig = 0.0f;
-        if(tick.Process())
-        {
-            freq    = mtof(kArpeggio[arp_idx]); // convert midi nn to frequency.
-            arp_idx = (arp_idx + 1)
-                      % 3; // advance the kArpeggio, wrapping at the end.
-            plk.SetFreq(freq);
-            trig = 1.0f;
-        }
-        sig_out = plk.Process(trig);
-        // Output
-        out[LEFT]  = sig_out;
-        out[RIGHT] = sig_out;
-    }
+    float    voltage_range    = max_voltage - min_voltage;
+    float    normalized_value = (volts - min_voltage) / voltage_range;
+    uint32_t dacUnit          = ceil(normalized_value * (resolution - 1));
+    return dacUnit;
+}
+
+
+float midi_note_to_volts(uint32_t midi_note)
+{
+    return (midi_note)*volts_per_semitone;
 }
 
 int main(void)
 {
-    float init_buff[256]; // buffer for Pluck impulse
-
-    // initialize seed hardware and daisysp modules
-    float sample_rate;
-    hw.Configure();
+    /** Initialize our hardware */
     hw.Init();
-    hw.SetAudioBlockSize(4);
-    sample_rate = hw.AudioSampleRate();
 
-    // Set up Metro to pulse every second
-    tick.Init(1.0f, sample_rate);
-    // Set up Pluck algo
-    plk.Init(sample_rate, init_buff, 256, PLUCK_MODE_RECURSIVE);
-    plk.SetDecay(0.95f);
-    plk.SetDamp(0.9f);
-    plk.SetAmp(0.3f);
+    /** Configure and Initialize the DAC */
+    DacHandle::Config dac_cfg;
+    dac_cfg.bitdepth   = DacHandle::BitDepth::BITS_12;
+    dac_cfg.buff_state = DacHandle::BufferState::DISABLED;
+    dac_cfg.mode       = DacHandle::Mode::POLLING;
+    dac_cfg.chn        = DacHandle::Channel::BOTH;
+    hw.dac.Init(dac_cfg);
 
-    arp_idx = 0;
+    /** Variable for output */
+    int output_val_1 = 0;
+    int output_val_2 = 0;
+
+    /** Infinite Loop */
+    while(1)
+    {
+        /** Every 1millisecond we'll increment our 12-bit value
+         *  The value will go from 0-4095
+         *  The full ramp waveform will have a period of about 4 seconds
+         *  The secondary waveform will be an inverted ramp (saw) 
+         *  at the same frequency
+         */
+        System::Delay(1500);
 
 
-    // start callback
-    hw.StartAudio(AudioCallback);
+        /** This sets our second output to the opposite of the first */
+        ///  output_val_2 = 4095 - output_val_1;
 
+        int dacU1 = volts_to_DAC(poo, 4096, 0.0f, 3.3f);
+        /** And write our 12-bit value to the output */
+        hw.dac.WriteValue(DacHandle::Channel::ONE, dacU1);
+        hw.dac.WriteValue(DacHandle::Channel::TWO, dacU1);
+        poo++;
 
-    while(1) {}
+        if(poo > 7)
+        {
+            poo = 0;
+        }
+    }
 }

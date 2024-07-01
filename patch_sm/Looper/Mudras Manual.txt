@@ -1,0 +1,134 @@
+Mudras
+CV Gesture Controller + Sequencer
+Limited WARRANTY:
+IC Alchemy modules are backed by a 12 month warranty
+from the date of purchase. (proof of purchase/invoice
+required)
+This warranty is limited to defects in manufacturing and
+does not encompass any issues that arise due to
+improper handling, storage, incorrect power supply,
+exposure to over voltage, or any modifications made to
+the module.
+If a module is approved for warranty service, it may be
+subject to a refund, replacement, or repair at IC
+Alchemy's discretion. Customers are responsible for the
+cost of shipping the module back to IC Alchemy for
+warranty service.
+Please contact tech@icalchemy.com with any inquiries,
+Return to Manufacturer Authorization, or any feedback to
+share.
+Installation
+Mudras is designed for Eurorack modular systems and
+occupies 12 HP of space. It requires a +12V supply (2x5
+pin connector), drawing 30mA from the +12V rail.
+Make sure the red stripe of the provided
+ribbon cable is oriented on the same side as
+the "RedLine" marking on the printed circuit
+board. The shrouded header also lines up this way
+with the cable provided, but might not with other cables.
+Overview
+At its core Mudras is a step sequencer that moves
+forward one step for each rising edge gate/ trigger seen
+on its input jack. Instead of the standard knobs, Mudras
+uses a “time of flight” laser based sensor to read the
+nearest distance directly above the hole labeled sensor.
+Notes are always input in real time by holding down the
+record button as the sequence steps forward.
+FEATURES
+• 64 Step Control Voltage Sequencer
+• Analog Style Clock Input
+• Reset input
+• 7 V/Oct Scales
+• “Unquantized” Linear Mode = 0.51 mV/ mm
+• Inputs and Outputs protected from eurorack
+voltages
+SPECIFICATIONS
+Power consumption............……………… +28mA, -0mA
+Module Width..............................………… 12HP
+Module Depth ........................................… 25mm
+Distance Sensor Range .........................… 700mm
+DistanceSensor Resolution…………………. 1mm
+Quick Start
+1. Patch any clock/gate/LFO source into the Clock
+Input
+2. Patch from Pitch Output into any external CV input
+3. Hold the Record Button down while receiving
+clock/gates. Distance from sensor is recorded to current
+step on rising edge seen on Clock Input
+1. Clock Input -
+Rising edge any gate/clock over 2 volts
+moves the sequence forward one step.
+2. Reset Input -
+Rising edge any gate over 2 volts resets
+sequence to first step
+3. Length Knob -–
+Turn to set the length of sequence
+4. Distance Sensor
+Gesture is read from this sensor
+5. Record Button -
+Press to record to sequence
+6. Scale Knob
+Choose between 7 scales or linear mode
+7. Pitch Output
+Outputs quantized V/Oct CV
+8. Clock Output
+Passive multiple of the clock input.
+Patch to an envelope, or use as clock
+to avoid sensor
+Scales
+1) Major: The major scale is the most commonly used scale in western
+music and can be thought of as the white keys on the piano.
+2) Dorian: Minor scale with a raised sixth, often used in jazz and rock
+music. Contains all notes from minor pentatonic scale plus two more.
+3) Minor Pentatonic: Five-note scale that is used in various music
+styles around the world. The staple of all blues and rock guitar players.
+4) Harmonic Minor: Minor scale with a raised seventh, raised seventh
+tone, which creates a strong leading tone to the root.
+5) Diminished: Scale constructed from a repeated pattern of whole and
+half steps, giving an erie and unstable sound.
+6) Whole Tone: Scale where all notes are spaced a whole step apart,
+often used to convey dreaminess or ambiguity.
+7) Chromatic: This scale includes all the notes on a standard piano.
+Using this scale you can play any other scale.
+1. Major
+2. Natural Minor
+3. Minor Pentatonic
+4. Harmonic Minor
+5. Diminished
+6. Whole Tone
+7. Chromatic
+8. Linear CV
+Detailed Instructions
+Setting the Scale Mode
+• Turn the Scale Knob to select one of the seven musical
+scales (represented by the icons made of dots.)
+• Turn the knob all the way to the right for linear mode
+(represented by the solid line icon)
+• Changing the scale also changes notes in the sequence to
+match the new scale.
+• Linear mode has its own separate sequence from the music
+scales because in linear mode there are 700 different
+voltages as opposed to the maximum of 36 in the other
+modes.
+• Linear mode and scale mode each are stored seperately.
+You do not lose anything by switching to linear mode.
+Setting the Loop Length
+• Turn the Length Knob to choose the length of the
+sequence.
+• You can lengthen and shorten the sequence and Mudras will
+stay locked the clock.
+Recording to the Sequence
+• Hold down the Record Button to write to the sequence.
+• When a clock is received AND the record button is held down
+the sensor records the distance of whatever object first block
+its narrow path.
+• You can record one step at a time, or hold down the record
+button as long as you want and new data will be written to
+each step.
+• The number of steps that are recorded is dictated by the
+Length Knob. Upon release of the record button the
+sequence continues on to the next step.
+• The closer your hand is to the sensor, the lower the voltage/ pitch;
+moving your hand away will increase the voltage/ pitch.
+• Distances closer than 20 millimeters and greater than 700
+millimeters from the sensor are recorded as 0 volts.

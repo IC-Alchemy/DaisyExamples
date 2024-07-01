@@ -3,7 +3,7 @@ TARGET = RandomCvExample
 
 # Sources
 CPP_SOURCES = RandomCvExample.cpp
-
+USE_DAISYSP_LGPL=1
 # Library Locations
 LIBDAISY_DIR = ../../libDaisy/
 DAISYSP_DIR = ../../DaisySP/
